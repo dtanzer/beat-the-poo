@@ -52,6 +52,6 @@ export function VisualStatus({failedGuesses}: VisualStatusProps) {
 
 	
 	return <div><svg width="256px" height="256px" viewBox="0 0 256 256" version="1.1" style={{fillRule:"evenodd", clipRule:"evenodd", strokeLinecap:"round", strokeLinejoin:"round", strokeMiterlimit:1.5, }}>
-		{ failedGuesses < 11? [] : paths }
+		{ paths.filter((_, i) => i<failedGuesses) }
 	</svg></div>
 }

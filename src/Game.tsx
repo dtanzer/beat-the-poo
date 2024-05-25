@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { BeatThePooGame } from "./BeatThePooGame"
 import { VisualStatus } from "./VisualStatus"
 import { GuessesHistory } from "./GuessesHistory"
+import { Hint } from "./Hint"
 
 export interface GameProps {
 	gameApi?: BeatThePooGame,
@@ -9,7 +10,7 @@ export interface GameProps {
 export function Game({ gameApi = new BeatThePooGame() }: GameProps) {
 	const [startTime, setStartTime] = useState(Date.now())
 	const [timeLeft, setTimeLeft] = useState(15)
-	const [wrongGuesses, setWrongGuesses] = useState(0)
+	const [gameState, setGameState] = useState(gameApi.gameState)
 
 	useEffect(() => {
 		const interval = setInterval(() => {
@@ -18,7 +19,6 @@ export function Game({ gameApi = new BeatThePooGame() }: GameProps) {
 
 			setTimeLeft(secondsLeft)
 			if(secondsLeft <= 0) {
-				setWrongGuesses(gameApi.loseImmediately().wrongGuesses)
 				clearInterval(interval)
 			}
 		}, 200)
@@ -27,9 +27,13 @@ export function Game({ gameApi = new BeatThePooGame() }: GameProps) {
 		}
 	}, [startTime, gameApi])
 
-	return <>
+	return <div tabIndex={1} onKeyDown={e => { if(e.key >= 'a' && e.key <= 'z') {
+		setStartTime(Date.now())
+		setGameState(gameApi.guess(e.key))
+	}}}>
 		<div>{timeLeft}</div>
-		<div><VisualStatus failedGuesses={wrongGuesses}/></div>
-		<GuessesHistory previousGuesses='Previous Guesses'/>
-	</>
+		<Hint hint={gameState.hint} />
+		<div><VisualStatus failedGuesses={gameState.wrongGuesses}/></div>
+		<GuessesHistory previousGuesses={gameState.guesses}/>
+	</div>
 }

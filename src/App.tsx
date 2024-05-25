@@ -3,12 +3,13 @@ import { Heading } from './Heading'
 import { PlayerName } from './PlayerName'
 import { BeatThePooGame } from './BeatThePooGame'
 import { Game } from './Game'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 export interface AppProps {
 	gameApi: BeatThePooGame,
 }
 function App({ gameApi = new BeatThePooGame() }: AppProps) {
+	const [gameStarted, setGameStarted] = useState(false)
 
 	useEffect(() => {
 		gameApi.newGame('tutorial')
@@ -17,8 +18,8 @@ function App({ gameApi = new BeatThePooGame() }: AppProps) {
 	return (
 		<>
 			<Heading text="Beat the Poo"><span className='small'>A word guessing game</span></Heading>
-			<PlayerName />
-			<Game />
+			<PlayerName onNameEntered={ () => setGameStarted(true) }/>
+			{ gameStarted? <Game /> : undefined }
 		</>
 	)
 }

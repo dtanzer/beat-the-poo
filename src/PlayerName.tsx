@@ -2,9 +2,11 @@ import { useState } from "react"
 import { BeatThePooGame } from "./BeatThePooGame"
 
 export interface PlayerNameProps {
+	onNameEntered?: (name: string) => unknown,
+
 	gameApi?: BeatThePooGame,
 }
-export function PlayerName({ gameApi = new BeatThePooGame() }: PlayerNameProps) {
+export function PlayerName({ onNameEntered, gameApi = new BeatThePooGame() }: PlayerNameProps) {
 	const [name, setName] = useState('')
 	const [nameEntered, setNameEntered] = useState(false)
 
@@ -16,8 +18,10 @@ export function PlayerName({ gameApi = new BeatThePooGame() }: PlayerNameProps) 
 					onChange={e => setName(e.target.value)} data-testid="player-name"
 					onKeyDown={e => {
 						if(e.key === 'Enter') {
-							gameApi.playerName = (e.target as HTMLInputElement).value
+							const name = (e.target as HTMLInputElement).value
+							gameApi.playerName = name
 							setNameEntered(true)
+							onNameEntered?.(name)
 						}
 					}}/>
 			}
