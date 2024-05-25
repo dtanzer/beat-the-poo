@@ -2,9 +2,9 @@ import { useState } from "react"
 import { BeatThePooGame } from "./BeatThePooGame"
 
 export interface PlayerNameProps {
-	gameApi: BeatThePooGame,
+	gameApi?: BeatThePooGame,
 }
-export function PlayerName({ gameApi }: PlayerNameProps) {
+export function PlayerName({ gameApi = new BeatThePooGame() }: PlayerNameProps) {
 	const [name, setName] = useState('')
 	const [nameEntered, setNameEntered] = useState(false)
 

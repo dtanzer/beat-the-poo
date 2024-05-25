@@ -5,41 +5,48 @@ export interface GameState {
 	playerName: string,
 }
 export class BeatThePooGame {
-	private guessedLetters: string[] = []
-	private wrongGuesses = 0
-	private _playerName = ''
+	newGame(secretWord: string) {
+		sessionStorage.setItem('secretWord', secretWord)
+		sessionStorage.setItem('gameState', JSON.stringify({
+			hint: secretWord.split('').map(_ => null),
+			wrongGuesses: 0,
+			guesses: [],
+			playerName: '',
+		}))
+	}
 
-	constructor(private secretWord: string) {}
-
+	private updateState(setter: (g: GameState)=>unknown): GameState {
+		const gameState = JSON.parse(sessionStorage.getItem('gameState')!)
+		setter(gameState)
+		sessionStorage.setItem('gameState', JSON.stringify(gameState))
+		return gameState
+	}
 	set playerName(name: string) {
-		this._playerName = name
+		this.updateState(g => g.playerName = name)
 	}
 	get gameState(): GameState {
-		return {
-			hint: this.secretWord.split('').map(l => this.guessedLetters.find(g => g===l)? l : null),
-			wrongGuesses: this.wrongGuesses,
-			guesses: this.guessedLetters,
-			playerName: this._playerName,
-		}
+		return JSON.parse(sessionStorage.getItem('gameState')!)
 	}
 
 	guess(letter: string): GameState {
-		if(this.wrongGuesses >= 11) { return this.gameState }
-		if(this.guessedLetters.find(g => g===letter)) {
-			this.wrongGuesses++
-			return this.gameState
-		}
+		return this.updateState(gs => {
+			if(gs.wrongGuesses >= 11) { return this.gameState }
+			if(gs.guesses.find(g => g===letter)) {
+				gs.wrongGuesses++
+				return this.gameState
+			}
+	
+			gs.guesses.push(letter)
 
-		this.guessedLetters.push(letter)
-		if(this.secretWord.indexOf(letter) < 0) {
-			this.wrongGuesses++
-		}
-		
-		return this.gameState
+			const secretWord = sessionStorage.getItem('secretWord')!
+			gs.hint =secretWord.split('').map(l => gs.guesses.find(g => g===l)? l : null)
+			if(secretWord.indexOf(letter) < 0) {
+				gs.wrongGuesses++
+			}
+		})
 	}
 
 	loseImmediately(): GameState {
-		this.wrongGuesses = 11
-		return this.gameState
+		return this.updateState(gs => gs.wrongGuesses = 11)
 	}
 }

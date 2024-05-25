@@ -4,9 +4,9 @@ import { VisualStatus } from "./VisualStatus"
 import { GuessesHistory } from "./GuessesHistory"
 
 export interface GameProps {
-	gameApi: BeatThePooGame,
+	gameApi?: BeatThePooGame,
 }
-export function Game({ gameApi }: GameProps) {
+export function Game({ gameApi = new BeatThePooGame() }: GameProps) {
 	const [startTime, setStartTime] = useState(Date.now())
 	const [timeLeft, setTimeLeft] = useState(15)
 	const [wrongGuesses, setWrongGuesses] = useState(0)
