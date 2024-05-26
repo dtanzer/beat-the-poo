@@ -55,6 +55,7 @@ export function Game({ gameStarted, gameApi = new BeatThePooGame() }: GameProps)
 		<div>{timeLeft}</div>
 		<Hint hint={gameState.hint} />
 		<div><VisualStatus failedGuesses={gameState.wrongGuesses}/></div>
+		<text-status ref={el => el && (el.gameState = gameState)}></text-status>
 		<GuessesHistory previousGuesses={gameState.guesses}/>
 	</div>
 }
