@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { BeatThePooGame } from "./BeatThePooGame"
 import { VisualStatus } from "./VisualStatus"
 import { GuessesHistory } from "./GuessesHistory"
@@ -12,6 +12,10 @@ export function Game({ gameApi = new BeatThePooGame() }: GameProps) {
 	const [timeLeft, setTimeLeft] = useState(15)
 	const [gameState, setGameState] = useState(gameApi.gameState)
 
+	const gameRef = useRef<HTMLDivElement | null>(null)
+
+	useEffect(() => gameRef.current?.focus(), [gameRef])
+	
 	useEffect(() => {
 		const interval = setInterval(() => {
 			const secondsElapsed = Math.floor((Date.now() - startTime) / 1000)
@@ -30,7 +34,7 @@ export function Game({ gameApi = new BeatThePooGame() }: GameProps) {
 	return <div tabIndex={1} onKeyDown={e => { if(e.key >= 'a' && e.key <= 'z') {
 		setStartTime(Date.now())
 		setGameState(gameApi.guess(e.key))
-	}}}>
+	}}} ref={gameRef}>
 		<div>{timeLeft}</div>
 		<Hint hint={gameState.hint} />
 		<div><VisualStatus failedGuesses={gameState.wrongGuesses}/></div>
