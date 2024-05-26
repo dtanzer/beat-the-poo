@@ -5,31 +5,48 @@ import { GuessesHistory } from "./GuessesHistory"
 import { Hint } from "./Hint"
 
 export interface GameProps {
+	gameStarted: boolean,
 	gameApi?: BeatThePooGame,
 }
-export function Game({ gameApi = new BeatThePooGame() }: GameProps) {
+export function Game({ gameStarted, gameApi = new BeatThePooGame() }: GameProps) {
 	const [startTime, setStartTime] = useState(Date.now())
 	const [timeLeft, setTimeLeft] = useState(15)
 	const [gameState, setGameState] = useState(gameApi.gameState)
 
 	const gameRef = useRef<HTMLDivElement | null>(null)
 
-	useEffect(() => gameRef.current?.focus(), [gameRef])
+	useEffect(() => {
+		if(gameStarted) { gameRef.current?.focus() }
+	}, [gameRef, gameStarted])
 	
 	useEffect(() => {
-		const interval = setInterval(() => {
-			const secondsElapsed = Math.floor((Date.now() - startTime) / 1000)
-			const secondsLeft = 15-secondsElapsed
-
-			setTimeLeft(secondsLeft)
-			if(secondsLeft <= 0) {
-				clearInterval(interval)
-			}
-		}, 200)
-		return () => {
-			clearInterval(interval)
+		if(gameStarted) {
+			setStartTime(Date.now())
 		}
-	}, [startTime, gameApi])
+	}, [gameStarted])
+	useEffect(() => {
+		let interval: NodeJS.Timeout | null = null
+		if(gameStarted) {
+			interval = setInterval(() => {
+				const secondsElapsed = Math.floor((Date.now() - startTime) / 1000)
+				const secondsLeft = 15-secondsElapsed
+	
+				setTimeLeft(secondsLeft)
+				if(secondsLeft <= 0) {
+					if(interval) {
+						clearInterval(interval)
+						interval = null
+					}
+				}
+			}, 200)
+		}
+		return () => {
+			if(interval) {
+				clearInterval(interval)
+				interval = null
+			}
+		}
+	}, [startTime, gameApi, gameStarted])
 
 	return <div tabIndex={1} onKeyDown={e => { if(e.key >= 'a' && e.key <= 'z') {
 		setStartTime(Date.now())

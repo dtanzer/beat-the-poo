@@ -19,7 +19,7 @@ function App({ gameApi = new BeatThePooGame() }: AppProps) {
 		<>
 			<Heading text="Beat the Poo"><span className='small'>A word guessing game</span></Heading>
 			<PlayerName onNameEntered={ () => setGameStarted(true) }/>
-			{ gameStarted? <Game /> : undefined }
+			<Game gameStarted={gameStarted} />
 		</>
 	)
 }
