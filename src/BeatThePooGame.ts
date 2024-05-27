@@ -5,7 +5,7 @@ export interface GameState {
 	playerName: string,
 }
 export class BeatThePooGame {
-	newGame(secretWord: string) {
+	static newGame(secretWord: string) {
 		sessionStorage.setItem('secretWord', secretWord)
 		sessionStorage.setItem('gameState', JSON.stringify({
 			hint: secretWord.split('').map(_ => null),
@@ -13,6 +13,7 @@ export class BeatThePooGame {
 			guesses: [],
 			playerName: '',
 		}))
+		return new BeatThePooGame()
 	}
 
 	private updateState(setter: (g: GameState)=>unknown): GameState {

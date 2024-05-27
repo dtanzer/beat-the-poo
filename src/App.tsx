@@ -3,23 +3,19 @@ import { Heading } from './Heading'
 import { PlayerName } from './PlayerName'
 import { BeatThePooGame } from './BeatThePooGame'
 import { Game } from './Game'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 export interface AppProps {
 	gameApi: BeatThePooGame,
 }
-function App({ gameApi = new BeatThePooGame() }: AppProps) {
+function App({ gameApi = BeatThePooGame.newGame('tutorial') }: AppProps) {
 	const [gameStarted, setGameStarted] = useState(false)
-
-	useEffect(() => {
-		gameApi.newGame('tutorial')
-	}, [gameApi])
 
 	return (
 		<>
 			<Heading text="Beat the Poo"><span className='small'>A word guessing game</span></Heading>
 			<PlayerName onNameEntered={ () => setGameStarted(true) }/>
-			<Game gameStarted={gameStarted} />
+			<Game gameStarted={gameStarted} gameApi={gameApi}/>
 		</>
 	)
 }
