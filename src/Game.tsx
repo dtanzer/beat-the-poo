@@ -6,9 +6,9 @@ import { Hint } from "./Hint"
 
 export interface GameProps {
 	gameStarted: boolean,
-	gameApi?: BeatThePooGame,
+	gameApi: BeatThePooGame,
 }
-export function Game({ gameStarted, gameApi = new BeatThePooGame() }: GameProps) {
+export function Game({ gameStarted, gameApi }: GameProps) {
 	const [startTime, setStartTime] = useState(Date.now())
 	const [timeLeft, setTimeLeft] = useState(15)
 	const [gameState, setGameState] = useState(gameApi.gameState)
@@ -35,6 +35,7 @@ export function Game({ gameStarted, gameApi = new BeatThePooGame() }: GameProps)
 				if(secondsLeft <= 0) {
 					if(interval) {
 						clearInterval(interval)
+						setGameState(gameApi.loseImmediately())
 						interval = null
 					}
 				}

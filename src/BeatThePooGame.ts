@@ -5,28 +5,25 @@ export interface GameState {
 	playerName: string,
 }
 export class BeatThePooGame {
-	static newGame(secretWord: string) {
-		sessionStorage.setItem('secretWord', secretWord)
-		sessionStorage.setItem('gameState', JSON.stringify({
-			hint: secretWord.split('').map(_ => null),
-			wrongGuesses: 0,
-			guesses: [],
-			playerName: '',
-		}))
-		return new BeatThePooGame()
+	private _gameState: GameState = {
+		hint: [],
+		wrongGuesses: 0,
+		guesses: [],
+		playerName: '',
+	}
+	constructor(private secretWord: string) {
+		this._gameState.hint = secretWord.split('').map(_ => null)
 	}
 
 	private updateState(setter: (g: GameState)=>unknown): GameState {
-		const gameState = JSON.parse(sessionStorage.getItem('gameState')!)
-		setter(gameState)
-		sessionStorage.setItem('gameState', JSON.stringify(gameState))
-		return gameState
+		setter(this._gameState)
+		return this._gameState
 	}
 	set playerName(name: string) {
 		this.updateState(g => g.playerName = name)
 	}
 	get gameState(): GameState {
-		return JSON.parse(sessionStorage.getItem('gameState')!)
+		return this._gameState
 	}
 
 	guess(letter: string): GameState {

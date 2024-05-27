@@ -8,13 +8,13 @@ import { useState } from 'react'
 export interface AppProps {
 	gameApi: BeatThePooGame,
 }
-function App({ gameApi = BeatThePooGame.newGame('tutorial') }: AppProps) {
+function App({ gameApi = new BeatThePooGame('tutorial') }: AppProps) {
 	const [gameStarted, setGameStarted] = useState(false)
 
 	return (
 		<>
 			<Heading text="Beat the Poo"><span className='small'>A word guessing game</span></Heading>
-			<PlayerName onNameEntered={ () => setGameStarted(true) }/>
+			<PlayerName onNameEntered={ () => setGameStarted(true) } gameApi={gameApi}/>
 			<Game gameStarted={gameStarted} gameApi={gameApi}/>
 		</>
 	)

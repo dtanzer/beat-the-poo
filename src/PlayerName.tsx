@@ -4,9 +4,9 @@ import { BeatThePooGame } from "./BeatThePooGame"
 export interface PlayerNameProps {
 	onNameEntered?: (name: string) => unknown,
 
-	gameApi?: BeatThePooGame,
+	gameApi: BeatThePooGame,
 }
-export function PlayerName({ onNameEntered, gameApi = new BeatThePooGame() }: PlayerNameProps) {
+export function PlayerName({ onNameEntered, gameApi }: PlayerNameProps) {
 	const [name, setName] = useState('')
 	const [nameEntered, setNameEntered] = useState(false)
 
