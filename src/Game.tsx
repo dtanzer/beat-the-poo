@@ -5,9 +5,9 @@ import { GuessesHistory } from "./GuessesHistory"
 import { Hint } from "./Hint"
 
 export interface GameProps {
-	gameApi?: BeatThePooGame,
+	gameApi: BeatThePooGame,
 }
-export function Game({ gameApi = new BeatThePooGame() }: GameProps) {
+export function Game({ gameApi }: GameProps) {
 	const [startTime, setStartTime] = useState(Date.now())
 	const [timeLeft, setTimeLeft] = useState(15)
 	const [gameState, setGameState] = useState(gameApi.gameState)
@@ -20,6 +20,7 @@ export function Game({ gameApi = new BeatThePooGame() }: GameProps) {
 			setTimeLeft(secondsLeft)
 			if(secondsLeft <= 0) {
 				clearInterval(interval)
+				setGameState(gameApi.loseImmediately())
 			}
 		}, 200)
 		return () => {
