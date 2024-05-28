@@ -47,6 +47,7 @@ export function Game({ gameApi, gameStarted }: GameProps) {
 	}}} ref={gameElementRef}>
 		<div>{timeLeft}</div>
 		<Hint hint={gameState.hint} />
+		<text-status wrongGuesses={gameState.wrongGuesses}></text-status>
 		<div><VisualStatus failedGuesses={gameState.wrongGuesses}/></div>
 		<GuessesHistory previousGuesses={gameState.guesses}/>
 	</div>
